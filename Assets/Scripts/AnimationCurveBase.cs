@@ -14,6 +14,8 @@ namespace Citrine.Utils.AnimationCompression
 
         internal EditorCurveBinding[] binding;
 
+        internal bool Reduced { get; private set; }
+
         internal string path => binding[0].path;
         internal string propertyName => binding[0].propertyName[..^2];
         private int length => curve[0]?.length ?? 0;
@@ -27,7 +29,11 @@ namespace Citrine.Utils.AnimationCompression
         protected abstract T Evaluate(float time);
         protected abstract IKeyframeBase<T> GetKey(int index);
         protected abstract void SetKey(int index, IKeyframeBase<T> key);
-        protected abstract void SetKeys(List<IKeyframeBase<T>> list);
+
+        protected virtual void SetKeys(List<IKeyframeBase<T>> list)
+        {
+            Reduced = true;
+        }
 
         protected abstract T Interpolate(IKeyframeBase<T> begin, IKeyframeBase<T> end, float time);
         
@@ -44,9 +50,9 @@ namespace Citrine.Utils.AnimationCompression
             begin.ClearSlope();
             end.ClearSlope();
 
-            for (int j = 1; j < length - 1; ++j)
+            for (int i = 1; i < length - 1; i++)
             {
-                float time = GetTimeAt(j);
+                float time = GetTimeAt(i);
 
                 if (!CalculateErrorAtTime(begin, end, time, errorFunction, error))
                 {

@@ -16,6 +16,10 @@ namespace Citrine.Utils.AnimationCompression
             foreach (var curve in curves)
             {
                 curve.ReduceKeyframes(reductionFunction, error, sampleRate);
+                if (curve.Reduced)
+                {
+                    Debug.Log($"{curve.path}.{curve.propertyName} is reduced!");
+                }
             }
         }
 
@@ -173,25 +177,49 @@ namespace Citrine.Utils.AnimationCompression
             AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
         }
 
-        private bool QuaternionRotationErrorFunction(Quaternion q1, Quaternion q2, float maxError)
+        private bool QuaternionRotationErrorFunction(Quaternion reduced, Quaternion value, float maxError)
         {
-            return Quaternion.Dot(q1, q1) > maxError && Quaternion.Dot(q1.normalized, q2.normalized) > maxError;
+            return Quaternion.Dot(reduced, reduced) > maxError && Quaternion.Dot(reduced.normalized, value.normalized) > maxError;
         }
         
-        private bool RawEulerAngleErrorFunction(Vector3 e1, Vector3 e2, float maxError)
+        private bool RawEulerAngleErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
-            return QuaternionRotationErrorFunction(Quaternion.Euler(e1), Quaternion.Euler(e2), maxError);
+            return QuaternionRotationErrorFunction(Quaternion.Euler(reduced), Quaternion.Euler(value), maxError);
         }
         
-        private bool PositionErrorFunction(Vector3 p1, Vector3 p2, float maxError)
+        private bool PositionErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
-            maxError *= 0.5f * (p1.magnitude + p2.magnitude);
-            return Vector3.Distance(p1, p2) < maxError;
+            float minValue = 0.00001f * maxError;
+
+            float distance = (value - reduced).sqrMagnitude;
+            float length = value.sqrMagnitude;
+            float lengthReduced = reduced.sqrMagnitude;
+            if (DeltaError(length, lengthReduced, distance, maxError * maxError, minValue * minValue))
+                return false;
+
+            var distanceX = Mathf.Abs(value.x - reduced.x);
+            var distanceY = Mathf.Abs(value.y - reduced.y);
+            var distanceZ = Mathf.Abs(value.z - reduced.z);
+
+            if (DeltaError(value.x, reduced.x, distanceX, maxError, minValue))
+                return false;
+            if (DeltaError(value.y, reduced.y, distanceY, maxError, minValue))
+                return false;
+            if (DeltaError(value.z, reduced.z, distanceZ, maxError, minValue))
+                return false;
+
+            return true;
         }
         
-        private bool ScaleErrorFunction(Vector3 s1, Vector3 s2, float maxError)
+        private bool ScaleErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
-            return PositionErrorFunction(s1, s2, maxError);
+            return PositionErrorFunction(reduced, value, maxError);
+        }
+
+        private bool DeltaError(float value, float reduced, float delta, float percentage, float minValue)
+        {
+            float absValue = Mathf.Abs(value);
+            return (absValue > minValue || Mathf.Abs(reduced) > minValue) && delta > absValue * percentage;
         }
         
         public void ReduceKeyframes(AnimationClip clip, float rotationError, float positionError, float scaleError)
@@ -208,10 +236,10 @@ namespace Citrine.Utils.AnimationCompression
                 scaleError /= 100.0f;
                 float sampleRate = clip.frameRate;
 
-                ReduceKeyframes(rot, QuaternionRotationErrorFunction, rotationError, sampleRate);
-                ReduceKeyframes(euler, RawEulerAngleErrorFunction, rotationError, sampleRate);
-                ReduceKeyframes(pos, PositionErrorFunction, positionError, sampleRate);
-                ReduceKeyframes(scale, ScaleErrorFunction, scaleError, sampleRate);
+                ReduceKeyframes(rot, (q1, q2, maxError) => QuaternionRotationErrorFunction(q1, q2, maxError), rotationError, sampleRate);
+                ReduceKeyframes(euler, (e1, e2, maxError) => RawEulerAngleErrorFunction(e1, e2, maxError), rotationError, sampleRate);
+                ReduceKeyframes(pos, (p1, p2, maxError) => PositionErrorFunction(p1, p2, maxError), positionError, sampleRate);
+                ReduceKeyframes(scale, (s1, s2, maxError) => ScaleErrorFunction(s1, s2, maxError), scaleError, sampleRate);
 
                 SetQuaternionCurves(clip, rot);
                 SetVector3Curves(clip, euler);

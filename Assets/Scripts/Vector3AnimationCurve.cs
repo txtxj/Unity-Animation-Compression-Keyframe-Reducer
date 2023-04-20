@@ -48,6 +48,7 @@ namespace Citrine.Utils.AnimationCompression
 
         protected override void SetKeys(List<IKeyframeBase<Vector3>> list)
         {
+            base.SetKeys(list);
             Keyframe[] keyX = new Keyframe[list.Count];
             Keyframe[] keyY = new Keyframe[list.Count];
             Keyframe[] keyZ = new Keyframe[list.Count];
