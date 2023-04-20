@@ -15,7 +15,7 @@ namespace Citrine.Utils.AnimationCompression
             if (Selection.activeObject is AnimationClip clip)
             {
                 KeyframeReducer reducer = new KeyframeReducer();
-                reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError);
+                reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, true);
             }
         }
     }

@@ -8,8 +8,6 @@ namespace Citrine.Utils.AnimationCompression
 {
     public class KeyframeReducer
     {
-        public bool checkFlag = false;
-
         private void ReduceKeyframes<T>(AnimationCurveBase<T>[] curves,
             Func<T, T, float, bool> reductionFunction, float error, float sampleRate) where T : struct
         {
@@ -222,14 +220,14 @@ namespace Citrine.Utils.AnimationCompression
             return (absValue > minValue || Mathf.Abs(reduced) > minValue) && delta > absValue * percentage;
         }
         
-        public void ReduceKeyframes(AnimationClip clip, float rotationError, float positionError, float scaleError)
+        public void ReduceKeyframes(AnimationClip clip, float rotationError, float positionError, float scaleError, bool checkData)
         {
             AnimationCurveBase<Quaternion>[] rot = GetQuaternionCurves(clip);
             AnimationCurveBase<Vector3>[] euler = GetEulerCurves(clip);
             AnimationCurveBase<Vector3>[] pos = GetPositionCurves(clip);
             AnimationCurveBase<Vector3>[] scale = GetScaleCurves(clip);
 
-            if (!checkFlag || CheckData(euler, pos, scale))
+            if (!checkData || CheckData(euler, pos, scale))
             {
                 rotationError = Mathf.Cos(Mathf.Deg2Rad * rotationError);
                 positionError /= 100.0f;
