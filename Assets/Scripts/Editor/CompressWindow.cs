@@ -79,6 +79,7 @@ namespace Citrine.Utils.AnimationCompression
                 EditorUtility.DisplayProgressBar("Compressing Animations...", localPath, (float)i / fileAnimation.Length);
                 reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
             }
+            EditorUtility.ClearProgressBar();
         }
     }
 }
