@@ -234,10 +234,10 @@ namespace Citrine.Utils.AnimationCompression
                 scaleError /= 100.0f;
                 float sampleRate = clip.frameRate;
 
-                ReduceKeyframes(rot, (q1, q2, maxError) => QuaternionRotationErrorFunction(q1, q2, maxError), rotationError, sampleRate);
-                ReduceKeyframes(euler, (e1, e2, maxError) => RawEulerAngleErrorFunction(e1, e2, maxError), rotationError, sampleRate);
-                ReduceKeyframes(pos, (p1, p2, maxError) => PositionErrorFunction(p1, p2, maxError), positionError, sampleRate);
-                ReduceKeyframes(scale, (s1, s2, maxError) => ScaleErrorFunction(s1, s2, maxError), scaleError, sampleRate);
+                ReduceKeyframes(rot, QuaternionRotationErrorFunction, rotationError, sampleRate);
+                ReduceKeyframes(euler, RawEulerAngleErrorFunction, rotationError, sampleRate);
+                ReduceKeyframes(pos, PositionErrorFunction, positionError, sampleRate);
+                ReduceKeyframes(scale, ScaleErrorFunction, scaleError, sampleRate);
 
                 SetQuaternionCurves(clip, rot);
                 SetVector3Curves(clip, euler);
