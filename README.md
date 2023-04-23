@@ -25,6 +25,21 @@ You can easily derive curve classes of other data types and compress them by imp
 
 ## Result
 
+### Single Curve:
+
+<table><tr>
+  <td>
+    <img src="./Images/origin.png" border=0/>
+    <p style="display: block; text-align: center; color: #969696;padding: 10px;">Origin</p>
+  </td>
+		<td>
+    <img src="./Images/reduced.png" border=0/>
+    <p style="display: block; text-align: center; color: #969696;padding: 10px;">Reduced</p>
+  </td>
+</tr></table>
+
+### Model Animation:
+
 Model source: https://github.com/fish-ken/unity-animation-compressor
 
 |   | before | after |
