@@ -61,7 +61,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
             KeyframeReducer reducer = new KeyframeReducer();
             DirectoryInfo direction = new DirectoryInfo(path);
             fileAnimation = direction.GetFiles("*.anim", SearchOption.AllDirectories).Select(fileInfo => fileInfo.FullName).ToArray();
-            for (int i = 1; i <= fileAnimation.Length; i++)
+            for (int i = 0; i < fileAnimation.Length; i++)
             {
                 string file = fileAnimation[i];
                 int startIndex = file.IndexOf(@"Assets", StringComparison.Ordinal);
