@@ -8,19 +8,19 @@ namespace Citrine.Animation.Editor
 {
     internal class KeyframeReducerWindow : EditorWindow
     {
-        private float rotationError = 0.5f;
-        private float positionError = 0.5f;
-        private float scaleError = 0.5f;
+        private float rotationError = KeyframeReducerUtils.RotationError;
+        private float positionError = KeyframeReducerUtils.PositionError;
+        private float scaleError = KeyframeReducerUtils.ScaleError;
         private bool checkData = true;
 
         private string path = null;
 
         private string[] fileAnimation = null;
 
-        [MenuItem("Animation Tool/Keyframe Reducer")]
+        [MenuItem(StaticMetaData.WindowMenuItem)]
         public static void Init()
         {
-            KeyframeReducerWindow window = EditorWindow.GetWindow<KeyframeReducerWindow>("Keyframe Reducer");
+            KeyframeReducerWindow window = GetWindow<KeyframeReducerWindow>(StaticMetaData.WindowTitle);
             window.Show();
         }
 
