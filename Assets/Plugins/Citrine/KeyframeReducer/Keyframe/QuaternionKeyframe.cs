@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
     internal struct QuaternionKeyframe : IKeyframeBase<Quaternion>
     {

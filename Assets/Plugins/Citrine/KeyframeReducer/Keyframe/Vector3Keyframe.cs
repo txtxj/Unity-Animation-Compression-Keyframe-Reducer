@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
-    public struct Vector3Keyframe : IKeyframeBase<Vector3>
+    internal struct Vector3Keyframe : IKeyframeBase<Vector3>
     {
         public Keyframe[] keyframe { get; set; }
 

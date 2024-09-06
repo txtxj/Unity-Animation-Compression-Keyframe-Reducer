@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
-    public class CompressWindow : EditorWindow
+    internal class KeyframeReducerWindow : EditorWindow
     {
         private float rotationError = 0.5f;
         private float positionError = 0.5f;
@@ -20,7 +20,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
         [MenuItem("Animation Tool/Keyframe Reducer")]
         public static void Init()
         {
-            CompressWindow window = EditorWindow.GetWindow<CompressWindow>("Keyframe Reducer");
+            KeyframeReducerWindow window = EditorWindow.GetWindow<KeyframeReducerWindow>("Keyframe Reducer");
             window.Show();
         }
 
@@ -42,7 +42,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
         public void OnGUI()
         {
             HandleMouseDragEvent();
-            
+
             EditorGUILayout.LabelField(path ?? "Drag a folder here");
 
             rotationError = EditorGUILayout.FloatField("Rotation Error", rotationError);

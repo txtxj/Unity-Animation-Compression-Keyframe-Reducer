@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
     internal abstract class AnimationCurveBase<T> where T : struct
     {
         private const float Epsilon = (float)1e-6;
-        
+
         internal AnimationCurve[] curve;
 
         internal EditorCurveBinding[] binding;
@@ -35,15 +35,15 @@ namespace Citrine.Utils.Editor.AnimationCompression
         }
 
         protected abstract T Interpolate(IKeyframeBase<T> begin, IKeyframeBase<T> end, float time);
-        
+
         private float GetTimeAt(int index) => curve[0].keys[index].time;
-        
+
         private bool CalculateErrorAtTime(IKeyframeBase<T> key0, IKeyframeBase<T> key1,
             float time, Func<T, T, float, bool> errorFunction, float error)
         {
             return errorFunction(Interpolate(key0, key1, time), Evaluate(time), error);
         }
-        
+
         private bool CheckConstantAndReduce(IKeyframeBase<T> begin, IKeyframeBase<T> end, Func<T, T, float, bool> errorFunction, float error)
         {
             begin.ClearSlope();
@@ -63,7 +63,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
 
             return true;
         }
-        
+
         private bool IsReducible(int beginIndex, int endIndex, Func<T, T, float, bool> errorFunction, float error, float sampleRate)
         {
             IKeyframeBase<T> begin = GetKey(beginIndex);
@@ -91,12 +91,12 @@ namespace Citrine.Utils.Editor.AnimationCompression
                     return false;
                 }
             }
-            
+
             CalculateErrorAtTime(GetKey(0), GetKey(3), 1f, errorFunction, error);
 
             return true;
         }
-        
+
         internal void ReduceKeyframes(Func<T, T, float, bool> errorFunction, float error, float sampleRate)
         {
             if (length <= 2)
@@ -106,16 +106,16 @@ namespace Citrine.Utils.Editor.AnimationCompression
 
             IKeyframeBase<T> begin = GetKey(0);
             IKeyframeBase<T> end = GetKey(length - 1);
-            
+
             if (CheckConstantAndReduce(begin, end, errorFunction, error))
             {
                 return;
             }
-            
+
             List<IKeyframeBase<T>> reducedKeyframes = new List<IKeyframeBase<T>>(length);
-            
+
             reducedKeyframes.Add(GetKey(0));
-            
+
             int comparerFrameIndex = 0;
             for (int curIndex = 2; curIndex < length; curIndex++)
             {
@@ -125,7 +125,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
                     comparerFrameIndex = curIndex - 1;
                 }
             }
-            
+
             reducedKeyframes.Add(GetKey(length - 1));
 
             if (reducedKeyframes.Count < length)
@@ -165,14 +165,14 @@ namespace Citrine.Utils.Editor.AnimationCompression
 
             return true;
         }
-        
+
         protected float Hermite(Keyframe begin, Keyframe end, float time)
         {
             if (end.time - begin.time < Epsilon)
                 return begin.value;
 
             float normal = end.time - begin.time;
-            
+
             float t = (time - begin.time) / normal;
             float t2 = t * t;
             float t3 = t2 * t;

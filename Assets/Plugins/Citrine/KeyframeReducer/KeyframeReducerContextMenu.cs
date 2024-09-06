@@ -1,9 +1,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
-    public class KeyframeReducerUtility : UnityEditor.Editor
+    internal class KeyframeReducerContextMenu : UnityEditor.Editor
     {
         private static float rotationError = 0.5f;
         private static float positionError = 0.5f;

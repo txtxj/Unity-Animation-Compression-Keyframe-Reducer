@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.Editor.AnimationCompression
+namespace Citrine.Animation.Editor
 {
     internal class Vector3AnimationCurve : AnimationCurveBase<Vector3>
     {
@@ -16,7 +16,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
         {
             return new (curve[0].Evaluate(time), curve[1].Evaluate(time), curve[2].Evaluate(time));
         }
-        
+
         protected override Vector3 Interpolate(IKeyframeBase<Vector3> begin, IKeyframeBase<Vector3> end, float time)
         {
             Vector3 ret = new Vector3();
@@ -32,7 +32,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
                     ret[i] = Bezier(begin.keyframe[i], end.keyframe[i], time);
                 }
             }
-    
+
             return ret;
         }
 
@@ -40,7 +40,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
         {
             return new Vector3Keyframe(curve[0].keys[index], curve[1].keys[index], curve[2].keys[index]);
         }
-        
+
         protected override void SetKey(int index, IKeyframeBase<Vector3> key)
         {
             (curve[0].keys[index], curve[1].keys[index], curve[2].keys[index]) = (key.keyframe[0], key.keyframe[1], key.keyframe[2]);
@@ -58,7 +58,7 @@ namespace Citrine.Utils.Editor.AnimationCompression
                 keyY[i] = list[i].keyframe[1];
                 keyZ[i] = list[i].keyframe[2];
             }
-    
+
             curve[0].keys = keyX;
             curve[1].keys = keyY;
             curve[2].keys = keyZ;
