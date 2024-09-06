@@ -50,7 +50,7 @@ namespace Citrine.Animation.Editor
             scaleError = EditorGUILayout.FloatField("Scale Error", scaleError);
             checkData = EditorGUILayout.Toggle("Check Data", checkData);
 
-            if (GUILayout.Button("Apply") && path is not null)
+            if (GUILayout.Button("Reduce Keyframes") && path is not null)
             {
                 Run();
             }
@@ -71,11 +71,21 @@ namespace Citrine.Animation.Editor
                     continue;
                 }
                 string localPath = file[startIndex..];
+                float progress = (float)i / fileAnimation.Length;
                 AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(localPath);
-                EditorUtility.DisplayProgressBar("Compressing Animations...", localPath, (float)i / fileAnimation.Length);
-                reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
+                EditorUtility.DisplayProgressBar($"Keyframes Reduction {i} / {fileAnimation.Length}...", localPath, progress);
+                try
+                {
+                    Debug.Log($"Keyframes Reduction for clip \"{localPath}\"...");
+                    reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Error while keyframe reducing for \"{localPath}\": {ex.Message}");
+                }
             }
             EditorUtility.ClearProgressBar();
+            Debug.Log($"Keyframes Reduced for all animations in folder \"{direction.FullName}\"");
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,8 +16,16 @@ namespace Citrine.Animation.Editor
         {
             if (Selection.activeObject is AnimationClip clip)
             {
-                KeyframeReducer reducer = new KeyframeReducer();
-                reducer.ReduceKeyframes(clip, RotationError, PositionError, ScaleError, true);
+                try
+                {
+                    KeyframeReducer reducer = new KeyframeReducer();
+                    reducer.ReduceKeyframes(clip, RotationError, PositionError, ScaleError, true);
+                    Debug.Log($"Keyframes Reduced with default errors for clip \"{clip.name}\"");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Failed to reduce keyframes for clip \"{clip.name}\": {ex.Message}");
+                }
             }
         }
     }
