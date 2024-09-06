@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Utils.Editor.AnimationCompression
 {
     public class KeyframeReducer
     {

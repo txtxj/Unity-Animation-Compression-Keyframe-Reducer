@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Utils.Editor.AnimationCompression
 {
     internal class Vector3AnimationCurve : AnimationCurveBase<Vector3>
     {

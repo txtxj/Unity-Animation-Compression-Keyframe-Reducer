@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Utils.Editor.AnimationCompression
 {
     internal interface IKeyframeBase<T> where T : struct
     {

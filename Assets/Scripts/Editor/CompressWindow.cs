@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Utils.Editor.AnimationCompression
 {
     public class CompressWindow : EditorWindow
     {

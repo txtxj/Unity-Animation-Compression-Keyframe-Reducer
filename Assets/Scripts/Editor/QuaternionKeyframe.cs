@@ -1,35 +1,33 @@
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Utils.Editor.AnimationCompression
 {
-    public struct Vector3Keyframe : IKeyframeBase<Vector3>
+    internal struct QuaternionKeyframe : IKeyframeBase<Quaternion>
     {
         public Keyframe[] keyframe { get; set; }
 
-        public Vector3Keyframe(params Keyframe[] list)
+        public QuaternionKeyframe(params Keyframe[] list)
         {
-            keyframe = new[] { list[0], list[1], list[2] };
+            keyframe = new[] { list[0], list[1], list[2], list[3] };
         }
 
-        public float time
-        {
-            get => keyframe[0].time;
-        }
+        public float time => keyframe[0].time;
 
-        public Vector3 value
+        public Quaternion value
         {
-            get => new (keyframe[0].value, keyframe[1].value, keyframe[2].value);
+            get => new (keyframe[0].value, keyframe[1].value, keyframe[2].value, keyframe[3].value);
             set
             {
                 keyframe[0].value = value[0];
                 keyframe[1].value = value[1];
                 keyframe[2].value = value[2];
+                keyframe[3].value = value[3];
             }
         }
 
         public void ClearSlope()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 keyframe[i].inTangent = 0f;
                 keyframe[i].outTangent = 0f;
