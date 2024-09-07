@@ -4,20 +4,32 @@
 
 Read the animation curve into several tracks, each track compressed independently.
 
-First, all components of the same variable are combined and stored in the IKeyframeBase implementation.
+First, all components of the same variable are combined and stored in the `IKeyframeBase` implementation.
 
 Then, for each curve, determine whether each keyframe can be interpolated by the two keyframes before and after it, and if so, this frame can be deleted.
 
 ## Usage
 
-You can check the scripts under the Editor folder for some examples.
-
-The only interface is 
+The only interface is
 
 ```csharp
 KeyframeReducer reducer = new KeyframeReducer();
 reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
 ```
+
+You can use the scripts under inside the Editor:
+
+1. As Context Menu of file (`RMB` -> `Citrine` -> `Fast Keyframe Reduction`):
+
+<img src="./Images/context-item.gif"/>
+
+2. As Menu Item for selected file (`Assets` -> `Citrine` -> `Fast Keyframe Reduction`):
+
+<img src="./Images/menu-item.gif"/>
+
+3. As Window (`Tools` -> `Citrine` -> `Keyframe Reducer`)
+
+<img src="./Images/window-item.gif"/>
 
 ## Advanced
 
