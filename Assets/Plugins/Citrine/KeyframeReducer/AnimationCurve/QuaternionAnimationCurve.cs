@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Animation.Editor
 {
     internal class QuaternionAnimationCurve : AnimationCurveBase<Quaternion>
     {
@@ -16,7 +16,7 @@ namespace Citrine.Utils.AnimationCompression
         {
             return new (curve[0].Evaluate(time), curve[1].Evaluate(time), curve[2].Evaluate(time), curve[3].Evaluate(time));
         }
-        
+
         protected override Quaternion Interpolate(IKeyframeBase<Quaternion> begin, IKeyframeBase<Quaternion> end, float time)
         {
             Quaternion ret = new Quaternion();
@@ -40,7 +40,7 @@ namespace Citrine.Utils.AnimationCompression
         {
             return new QuaternionKeyframe(curve[0].keys[index], curve[1].keys[index], curve[2].keys[index], curve[3].keys[index]);
         }
-        
+
         protected override void SetKey(int index, IKeyframeBase<Quaternion> key)
         {
             (curve[0].keys[index], curve[1].keys[index], curve[2].keys[index], curve[3].keys[index])
@@ -61,7 +61,7 @@ namespace Citrine.Utils.AnimationCompression
                 keyZ[i] = list[i].keyframe[2];
                 keyW[i] = list[i].keyframe[3];
             }
-            
+
             curve[0].keys = keyX;
             curve[1].keys = keyY;
             curve[2].keys = keyZ;

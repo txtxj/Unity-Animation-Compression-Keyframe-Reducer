@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
-namespace Citrine.Utils.AnimationCompression
+namespace Citrine.Animation.Editor
 {
     public class KeyframeReducer
     {
@@ -86,7 +85,7 @@ namespace Citrine.Utils.AnimationCompression
             }
             return ret.ToArray();
         }
-        
+
         private AnimationCurveBase<Vector3>[] GetVector3Curves(AnimationClip clip, string propertyName)
         {
             List<AnimationCurveBase<Vector3>> ret = new List<AnimationCurveBase<Vector3>>();
@@ -131,17 +130,17 @@ namespace Citrine.Utils.AnimationCompression
             }
             return ret.ToArray();
         }
-        
+
         private AnimationCurveBase<Vector3>[] GetEulerCurves(AnimationClip clip)
         {
             return GetVector3Curves(clip, "localeuleranglesraw");
         }
-        
+
         private AnimationCurveBase<Vector3>[] GetPositionCurves(AnimationClip clip)
         {
             return GetVector3Curves(clip, "localposition");
         }
-        
+
         private AnimationCurveBase<Vector3>[] GetScaleCurves(AnimationClip clip)
         {
             return GetVector3Curves(clip, "localscale");
@@ -157,10 +156,10 @@ namespace Citrine.Utils.AnimationCompression
                 bindings.AddRange(iCurve.binding);
                 curves.AddRange(iCurve.curve);
             }
-            
+
             AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
         }
-        
+
         private void SetVector3Curves(AnimationClip clip, AnimationCurveBase<Vector3>[] list)
         {
             List<EditorCurveBinding> bindings = new List<EditorCurveBinding>(list.Length * 3);
@@ -171,7 +170,7 @@ namespace Citrine.Utils.AnimationCompression
                 bindings.AddRange(iCurve.binding);
                 curves.AddRange(iCurve.curve);
             }
-            
+
             AnimationUtility.SetEditorCurves(clip, bindings.ToArray(), curves.ToArray());
         }
 
@@ -179,12 +178,12 @@ namespace Citrine.Utils.AnimationCompression
         {
             return Quaternion.Dot(reduced, reduced) > maxError && Quaternion.Dot(reduced.normalized, value.normalized) > maxError;
         }
-        
+
         private bool RawEulerAngleErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
             return QuaternionRotationErrorFunction(Quaternion.Euler(reduced), Quaternion.Euler(value), maxError);
         }
-        
+
         private bool PositionErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
             float minValue = 0.00001f * maxError;
@@ -208,7 +207,7 @@ namespace Citrine.Utils.AnimationCompression
 
             return true;
         }
-        
+
         private bool ScaleErrorFunction(Vector3 reduced, Vector3 value, float maxError)
         {
             return PositionErrorFunction(reduced, value, maxError);
@@ -219,7 +218,7 @@ namespace Citrine.Utils.AnimationCompression
             float absValue = Mathf.Abs(value);
             return (absValue > minValue || Mathf.Abs(reduced) > minValue) && delta > absValue * percentage;
         }
-        
+
         public void ReduceKeyframes(AnimationClip clip, float rotationError, float positionError, float scaleError, bool checkData)
         {
             AnimationCurveBase<Quaternion>[] rot = GetQuaternionCurves(clip);
