@@ -1,0 +1,19 @@
+{
+  "name": "com.citrine.unityanimationcompressionkeyframereducer",
+  "version": "1.1.2",
+  "displayName": "Animation Compression Keyframe Reducer",
+  "description": "Keyframe Reducer in Unity",
+  "keywords": [
+    "animation",
+    "compression"
+  ],
+  "unity": "2021.3",
+  "changelogUrl": "https://github.com/txtxj/Unity-Animation-Compression-Keyframe-Reducer/releases",
+  "documentationUrl": "https://github.com/txtxj/Unity-Animation-Compression-Keyframe-Reducer",
+  "licensesUrl": "https://github.com/txtxj/Unity-Animation-Compression-Keyframe-Reducer/blob/main/Assets/Plugins/Citrine/KeyframeReducer/LICENSE",
+  "author": {
+    "name": "Citrine",
+    "email": "txtxj648@gmail.com",
+    "url": "https://txtxj.top"
+  }
+}
