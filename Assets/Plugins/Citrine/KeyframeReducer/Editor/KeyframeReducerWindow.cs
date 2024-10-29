@@ -16,14 +16,14 @@ namespace Citrine.Animation.Editor
 
     internal class KeyframeReducerWindow : EditorWindow
     {
-        private ClipGetType getType = ClipGetType.OneClip;
-        private AnimationClip[] clips = { };
-        private string folderPath = null;
+        private ClipGetType _getType = ClipGetType.OneClip;
+        private AnimationClip[] _clips = { };
+        private string _folderPath;
 
-        private float rotationError = KeyframeReducerUtils.RotationError;
-        private float positionError = KeyframeReducerUtils.PositionError;
-        private float scaleError = KeyframeReducerUtils.ScaleError;
-        private bool checkData = true;
+        private float _rotationError = KeyframeReducerUtils.RotationError;
+        private float _positionError = KeyframeReducerUtils.PositionError;
+        private float _scaleError = KeyframeReducerUtils.ScaleError;
+        private bool _checkData = true;
 
         [MenuItem(StaticMetaData.WindowMenuItem)]
         public static void Init()
@@ -43,7 +43,7 @@ namespace Citrine.Animation.Editor
             {
                 if (DragAndDrop.paths is { Length: > 0 })
                 {
-                    folderPath = DragAndDrop.paths[0];
+                    _folderPath = DragAndDrop.paths[0];
                 }
             }
         }
@@ -52,34 +52,34 @@ namespace Citrine.Animation.Editor
         {
             EditorGUILayout.LabelField("");
 
-            getType = (ClipGetType)EditorGUILayout.EnumPopup("How to get clips?", getType);
-            switch (getType)
+            _getType = (ClipGetType)EditorGUILayout.EnumPopup("How to get clips?", _getType);
+            switch (_getType)
             {
                 case ClipGetType.OneClip:
-                    clips = clips.Length == 1 ? clips : new AnimationClip[1];
-                    clips[0] = EditorGUILayout.ObjectField(clips[0], typeof(AnimationClip), false) as AnimationClip;
+                    _clips = _clips.Length == 1 ? _clips : new AnimationClip[1];
+                    _clips[0] = EditorGUILayout.ObjectField(_clips[0], typeof(AnimationClip), false) as AnimationClip;
                     break;
                 case ClipGetType.ManyClips:
-                    clips = clips.Where(c => c != null).Append(null).ToArray();
-                    for (int i = 0; i < clips.Length; i++)
-                        clips[i] = EditorGUILayout.ObjectField(clips[i], typeof(AnimationClip), false) as AnimationClip;
+                    _clips = _clips.Where(c => c != null).Append(null).ToArray();
+                    for (int i = 0; i < _clips.Length; i++)
+                        _clips[i] = EditorGUILayout.ObjectField(_clips[i], typeof(AnimationClip), false) as AnimationClip;
                     break;
                 case ClipGetType.Folder:
                     UpdateFolderPathFromDrag();
-                    folderPath = EditorGUILayout.TextField("Folder path", string.IsNullOrEmpty(folderPath) ? "Drag a folder here" : folderPath);
+                    _folderPath = EditorGUILayout.TextField("Folder path", string.IsNullOrEmpty(_folderPath) ? "Drag a folder here" : _folderPath);
                     break;
             }
 
             EditorGUILayout.LabelField("");
 
-            rotationError = EditorGUILayout.FloatField("Rotation Error", rotationError);
-            positionError = EditorGUILayout.FloatField("Position Error", positionError);
-            scaleError = EditorGUILayout.FloatField("Scale Error", scaleError);
-            checkData = EditorGUILayout.Toggle("Check Data", checkData);
+            _rotationError = EditorGUILayout.FloatField("Rotation Error", _rotationError);
+            _positionError = EditorGUILayout.FloatField("Position Error", _positionError);
+            _scaleError = EditorGUILayout.FloatField("Scale Error", _scaleError);
+            _checkData = EditorGUILayout.Toggle("Check Data", _checkData);
 
             if (GUILayout.Button("Reduce Keyframes"))
             {
-                ReduceKeyframes(GetClips(getType));
+                ReduceKeyframes(GetClips(_getType));
             }
         }
 
@@ -87,9 +87,9 @@ namespace Citrine.Animation.Editor
         {
             return getType switch
             {
-                ClipGetType.ManyClips => clips,
-                ClipGetType.OneClip => Enumerable.Repeat(clips[0], 1),
-                ClipGetType.Folder => new DirectoryInfo(folderPath)
+                ClipGetType.ManyClips => _clips,
+                ClipGetType.OneClip => Enumerable.Repeat(_clips[0], 1),
+                ClipGetType.Folder => new DirectoryInfo(_folderPath)
                     .GetFiles("*.anim", SearchOption.AllDirectories)
                     .Select(fileInfo =>
                     {
@@ -110,7 +110,6 @@ namespace Citrine.Animation.Editor
 
         private void ReduceKeyframes(IEnumerable<AnimationClip> clips)
         {
-            KeyframeReducer reducer = new KeyframeReducer();
             AnimationClip[] animationClips = clips.Where(c => c!= null).ToArray();
 
             for (int i = 0; i < animationClips.Length; i++)
@@ -121,7 +120,7 @@ namespace Citrine.Animation.Editor
                 try
                 {
                     Debug.Log($"Keyframes Reduction for clip \"{clip.name}\"...");
-                    reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
+                    clip.ReduceKeyframes(_rotationError, _positionError, _scaleError, _checkData);
                 }
                 catch (Exception ex)
                 {

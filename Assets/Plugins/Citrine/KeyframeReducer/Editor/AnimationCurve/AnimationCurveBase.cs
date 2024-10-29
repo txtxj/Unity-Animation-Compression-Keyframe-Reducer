@@ -15,9 +15,9 @@ namespace Citrine.Animation.Editor
 
         internal bool Reduced { get; private set; }
 
-        internal string path => binding[0].path;
-        internal string propertyName => binding[0].propertyName[..^2];
-        private int length => curve[0]?.length ?? 0;
+        internal string Path => binding[0].path;
+        internal string PropertyName => binding[0].propertyName[..^2];
+        private int Length => curve[0]?.length ?? 0;
 
         internal IKeyframeBase<T> this[int index]
         {
@@ -39,17 +39,18 @@ namespace Citrine.Animation.Editor
         private float GetTimeAt(int index) => curve[0].keys[index].time;
 
         private bool CalculateErrorAtTime(IKeyframeBase<T> key0, IKeyframeBase<T> key1,
-            float time, Func<T, T, float, bool> errorFunction, float error)
+            float time, KeyframeReducerErrorFunction.ErrorFunction<T> errorFunction, float error)
         {
             return errorFunction(Interpolate(key0, key1, time), Evaluate(time), error);
         }
 
-        private bool CheckConstantAndReduce(IKeyframeBase<T> begin, IKeyframeBase<T> end, Func<T, T, float, bool> errorFunction, float error)
+        private bool CheckConstantAndReduce(IKeyframeBase<T> begin, IKeyframeBase<T> end,
+            KeyframeReducerErrorFunction.ErrorFunction<T> errorFunction, float error)
         {
             begin.ClearSlope();
             end.ClearSlope();
 
-            for (int i = 1; i < length - 1; i++)
+            for (int i = 1; i < Length - 1; i++)
             {
                 float time = GetTimeAt(i);
 
@@ -64,7 +65,9 @@ namespace Citrine.Animation.Editor
             return true;
         }
 
-        private bool IsReducible(int beginIndex, int endIndex, Func<T, T, float, bool> errorFunction, float error, float sampleRate)
+        private bool IsReducible(int beginIndex, int endIndex,
+            KeyframeReducerErrorFunction.ErrorFunction<T> errorFunction, float error,
+            float sampleRate)
         {
             IKeyframeBase<T> begin = GetKey(beginIndex);
             IKeyframeBase<T> end = GetKey(endIndex);
@@ -79,7 +82,7 @@ namespace Citrine.Animation.Editor
                 }
             }
 
-            int frameCount = (int) ((end.time - begin.time) * sampleRate);
+            int frameCount = (int)((end.time - begin.time) * sampleRate);
             float frameStep = 1f / sampleRate;
 
             for (int i = 0; i <= frameCount; i++)
@@ -97,27 +100,26 @@ namespace Citrine.Animation.Editor
             return true;
         }
 
-        internal void ReduceKeyframes(Func<T, T, float, bool> errorFunction, float error, float sampleRate)
+        internal void ReduceKeyframes(KeyframeReducerErrorFunction.ErrorFunction<T> errorFunction, float error,
+            float sampleRate)
         {
-            if (length <= 2)
+            if (Length <= 2)
             {
                 return;
             }
 
             IKeyframeBase<T> begin = GetKey(0);
-            IKeyframeBase<T> end = GetKey(length - 1);
+            IKeyframeBase<T> end = GetKey(Length - 1);
 
             if (CheckConstantAndReduce(begin, end, errorFunction, error))
             {
                 return;
             }
 
-            List<IKeyframeBase<T>> reducedKeyframes = new List<IKeyframeBase<T>>(length);
-
-            reducedKeyframes.Add(GetKey(0));
+            List<IKeyframeBase<T>> reducedKeyframes = new List<IKeyframeBase<T>>(Length) { GetKey(0) };
 
             int comparerFrameIndex = 0;
-            for (int curIndex = 2; curIndex < length; curIndex++)
+            for (int curIndex = 2; curIndex < Length; curIndex++)
             {
                 if (!IsReducible(comparerFrameIndex, curIndex, errorFunction, error, sampleRate))
                 {
@@ -126,9 +128,9 @@ namespace Citrine.Animation.Editor
                 }
             }
 
-            reducedKeyframes.Add(GetKey(length - 1));
+            reducedKeyframes.Add(GetKey(Length - 1));
 
-            if (reducedKeyframes.Count < length)
+            if (reducedKeyframes.Count < Length)
             {
                 SetKeys(reducedKeyframes);
             }
@@ -136,10 +138,11 @@ namespace Citrine.Animation.Editor
 
         internal bool CheckData()
         {
-            if (length < 2)
+            if (Length < 2)
             {
                 Debug.LogWarning("Curve length is less than 2!");
             }
+
             for (int i = 1; i < curve.Length; i++)
             {
                 AnimationCurve iCurve = curve[i];
@@ -148,11 +151,13 @@ namespace Citrine.Animation.Editor
                     Debug.LogError("Curve is null!");
                     return false;
                 }
-                if (iCurve.length != length)
+
+                if (iCurve.length != Length)
                 {
                     Debug.LogError("Curve length illegal!");
                     return false;
                 }
+
                 for (int j = 0; j < iCurve.length; j++)
                 {
                     if (Math.Abs(iCurve[j].time - curve[0][j].time) > Epsilon)

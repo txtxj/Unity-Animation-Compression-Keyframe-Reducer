@@ -29,8 +29,8 @@ The only interface is
 唯一的接口如下
 
 ```csharp
-KeyframeReducer reducer = new KeyframeReducer();
-reducer.ReduceKeyframes(clip, rotationError, positionError, scaleError, checkData);
+AnimationClip clip;
+clip.ReduceKeyframes(rotationError, positionError, scaleError, checkData);
 ```
 
 You can use the scripts under inside the Editor:

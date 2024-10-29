@@ -18,8 +18,7 @@ namespace Citrine.Animation.Editor
             {
                 try
                 {
-                    KeyframeReducer reducer = new KeyframeReducer();
-                    reducer.ReduceKeyframes(clip, RotationError, PositionError, ScaleError, true);
+                    clip.ReduceKeyframes(RotationError, PositionError, ScaleError, true);
                     Debug.Log($"Keyframes Reduced with default errors for clip \"{clip.name}\"");
                 }
                 catch (Exception ex)
